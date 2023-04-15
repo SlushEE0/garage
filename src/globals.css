@@ -5,6 +5,7 @@
 *::after {
   box-sizing: border-box;
   font-family: 'Fira Sans', sans-serif;
+  overflow: hidden;
 }
 
 html {

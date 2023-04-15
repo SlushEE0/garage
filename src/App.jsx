@@ -1,10 +1,11 @@
 import React from 'react';
-const PASSWORD = 'gadem';
+import Toast from 'react-hot-toast';
+import { usernames } from '../lib/firebase.js';
 
 export default function App() {
-  const isAuthorized = localStorage.getItem('isAuthorized');
+  const storedUser = localStorage.getItem('storedUser');
   const [auth, SETauth] = React.useState(
-    isAuthorized === PASSWORD ? true : false
+    usernames.includes(storedUser) ? true : false
   );
   const [allowed, SETallowed] = React.useState(true);
 
@@ -12,24 +13,30 @@ export default function App() {
     SETallowed(false);
     if (!auth) window.location.reload();
 
-    await fetch(
-      'https://garageopener-27000-default-rtdb.firebaseio.com/state.json',
-      {
-        method: 'PUT',
-        body: JSON.stringify(1)
-      }
-    );
+    try {
+      await fetch(
+        `https://garageopener-27000-default-rtdb.firebaseio.com/${storedUser}/state.json`,
+        {
+          method: 'PUT',
+          body: JSON.stringify(1)
+        }
+      );
+    } catch (err) {
+      Toast.err('Something went wrong');
+      console.err(err);
+    }
+
+    Toast.success('Opening / Closing Garage');
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
-
     SETallowed(true);
   };
 
   if (!auth) {
     const [authInput, SETauthInput] = React.useState('');
 
-    if (authInput && authInput === PASSWORD) {
-      localStorage.setItem('isAuthorized', authInput);
+    if (authInput && usernames.includes(authInput)) {
+      localStorage.setItem('storedUser', authInput);
       window.location.reload();
     }
 
@@ -43,7 +50,7 @@ export default function App() {
             SETauthInput(e.target.value);
           }}
           value={authInput}
-          placeholder='Password'></input>
+          placeholder='USERNAME'></input>
       </>
     );
   } else if (auth) {
