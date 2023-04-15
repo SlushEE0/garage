@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@200&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+html {
+  color-scheme: dark light;
+}
+
+body {
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+.loginText {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.authInput {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 2.5rem;
+  width: 12rem;
+  text-align: center;
+  font-size: 2rem;
+  
+  border: none;
+  background-color: rgb(70, 70, 70);
+  transition: all 100ms;
+  border-radius: 2px;
+}
+.authInput:hover {
+  background-color: rgb(46, 46, 46);
+}
+
+.garageBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20rem;
+  height: 10rem;
+  font-size: 2rem;
+
+  border: none;
+  background-color: rgb(70, 70, 70);
+  transition: all 100ms;
+  border-radius: 2px;
+}
+.garageBtn:hover {
+  background-color: rgb(46, 46, 46);
+}
