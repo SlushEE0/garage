@@ -1,5 +1,5 @@
 import React from 'react';
-const PASSWORD = 'testing';
+const PASSWORD = 'gadem';
 
 export default function App() {
   const isAuthorized = localStorage.getItem('isAuthorized');
@@ -19,7 +19,7 @@ export default function App() {
         body: JSON.stringify(1)
       }
     );
-    
+
     await new Promise((resolve) => setTimeout(resolve, 750));
 
     SETallowed(true);
