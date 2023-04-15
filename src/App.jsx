@@ -20,7 +20,7 @@ export default function App() {
       }
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 750));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     SETallowed(true);
   };
