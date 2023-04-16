@@ -28,7 +28,7 @@ export default function App() {
 
     Toast.success('Opening / Closing Garage');
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     SETallowed(true);
   };
 
