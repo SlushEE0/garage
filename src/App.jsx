@@ -1,21 +1,20 @@
 import React from 'react';
 import Toast from 'react-hot-toast';
-import { usernames } from '../lib/firebase.js';
 
-export default function App() {
-  const storedUser = localStorage.getItem('storedUser');
-  const [auth, SETauth] = React.useState(
-    usernames.includes(storedUser) ? true : false
-  );
+export default function App({ UsersArr }) {
+  const storedUser = localStorage.getItem('userData');
+
+  const [auth, SETauth] = React.useState(UsersArr.includes(storedUser));
   const [allowed, SETallowed] = React.useState(true);
 
   const changeGarageState = async function () {
     SETallowed(false);
     if (!auth) window.location.reload();
+    if (!confirm('Open Garage?')) return;
 
     try {
       await fetch(
-        `https://garageopener-27000-default-rtdb.firebaseio.com/${storedUser}/state.json`,
+        `https://garageopener-27000-default-rtdb.firebaseio.com/${userInfo}/state.json`,
         {
           method: 'PUT',
           body: JSON.stringify(1)
@@ -28,35 +27,36 @@ export default function App() {
 
     Toast.success('Opening / Closing Garage');
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    SETallowed(true);
+    setTimeout(() => {
+      SETallowed(true);
+    }, 2000);
   };
 
   if (!auth) {
-    const [authInput, SETauthInput] = React.useState('');
+    const [userInput, SETuserInput] = React.useState();
 
-    if (authInput && usernames.includes(authInput)) {
-      localStorage.setItem('storedUser', authInput);
+    if (userInput && UsersArr.includes(userInput)) {
+      localStorage.setItem('userData', userInput);
       window.location.reload();
     }
 
     return (
-      <>
+      <main className='loginContainer'>
         <h1 className='loginText'>Please Login</h1>
         <input
-          className='authInput'
+          className='loginInput'
           type='text'
           onChange={(e) => {
-            SETauthInput(e.target.value);
+            SETuserInput(e.target.value);
           }}
-          value={authInput}
+          value={userInput}
           placeholder='USERNAME'></input>
-      </>
+      </main>
     );
   } else if (auth) {
     return (
       <button
-        className='garageBtn'
+        className='openBtn'
         onClick={changeGarageState}
         disabled={!allowed}>
         Click me to Open Garage
