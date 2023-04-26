@@ -37,9 +37,7 @@ export default function App({ UsersArr }) {
     const changeGarageState = async function () {
       SETallowed(false);
       if (!auth) window.location.reload();
-      if (!confirm('Open Garage?')) return;
-
-      console.log('confimed');
+      if (!confirm('Open Garage?')) return
 
       try {
         await fetch(
