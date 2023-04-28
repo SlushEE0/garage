@@ -31,6 +31,7 @@ body {
   min-height: 100vh;
   min-width: 100vw;
   background-color: var(--dark);
+  overflow: hidden;
 }
 
 .loginContainer {
@@ -87,21 +88,18 @@ body {
 }
 
 .logoutBtn {
-  position: absolute;
-  top: 5%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  transition: all 150ms;
+}
+.logoutBtn:hover {
+  background-color: rgb(65, 65, 65);
+}
 
-  width: 20rem;
+.btn-grey {
+  width: 12rem;
   height: 3rem;
 
   font-size: 1.5rem;
 
   border: none;
   background-color: var(--med);
-
-  transition: all 150ms;
-}
-.logoutBtn:hover {
-  background-color: rgb(65, 65, 65);
 }
