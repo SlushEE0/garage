@@ -8,7 +8,7 @@ export default function App({ UsersArr }) {
   if (!auth) {
     return <LoginPage UsersArr={UsersArr} />;
   } else if (auth) {
-    return <OpenPage />;
+    return <OpenPage storedUser={storedUser}/>;
   } else {
     return <h1>Something went horribly wrong, refresh the page</h1>;
   }
@@ -37,7 +37,7 @@ function LoginPage({ UsersArr }) {
   );
 }
 
-function OpenPage() {
+function OpenPage({storedUser}) {
   const [allowed, SETallowed] = React.useState(true);
 
   const logout = function () {
