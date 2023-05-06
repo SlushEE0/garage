@@ -5,10 +5,14 @@ export default function App({ UsersArr }) {
   const storedUser = localStorage.getItem('UserData');
   const auth = UsersArr.includes(storedUser);
 
+  function getAuth(UsersArr, storedUser) {
+    return UsersArr.includes(storedUser)
+  }
+
   if (!auth) {
-    return <LoginPage UsersArr={UsersArr} />;
+    return <LoginPage UsersArr={UsersArr} get />;
   } else if (auth) {
-    return <OpenPage storedUser={storedUser}/>;
+    return <OpenPage user={storedUser}/>;
   } else {
     return <h1>Something went horribly wrong, refresh the page</h1>;
   }
@@ -37,7 +41,7 @@ function LoginPage({ UsersArr }) {
   );
 }
 
-function OpenPage({storedUser}) {
+function OpenPage({user}) {
   const [allowed, SETallowed] = React.useState(true);
 
   const logout = function () {
@@ -47,11 +51,10 @@ function OpenPage({storedUser}) {
 
   const changeGarageState = async function () {
     SETallowed(false);
-    if (!auth) window.location.reload();
 
     try {
       await fetch(
-        `https://garageopener-27000-default-rtdb.firebaseio.com/${storedUser}/state.json`,
+        `https://garageopener-27000-default-rtdb.firebaseio.com/${user}/state.json`,
         {
           method: 'PUT',
           body: JSON.stringify(1)
