@@ -3,16 +3,16 @@ import Toast from 'react-hot-toast';
 
 export default function App({ UsersArr }) {
   const storedUser = localStorage.getItem('UserData');
-  const auth = UsersArr.includes(storedUser);
+  const auth = getAuth(storedUser);
 
-  function getAuth(UsersArr, storedUser) {
-    return UsersArr.includes(storedUser)
+  function getAuth(storedUser) {
+    return UsersArr.includes(storedUser);
   }
 
   if (!auth) {
-    return <LoginPage UsersArr={UsersArr} get />;
+    return <LoginPage {...{ UsersArr }} />;
   } else if (auth) {
-    return <OpenPage user={storedUser}/>;
+    return <OpenPage {...{getAuth, storedUser}} />;
   } else {
     return <h1>Something went horribly wrong, refresh the page</h1>;
   }
@@ -41,8 +41,10 @@ function LoginPage({ UsersArr }) {
   );
 }
 
-function OpenPage({user}) {
+function OpenPage({ storedUser, getAuth }) {
   const [allowed, SETallowed] = React.useState(true);
+
+  if(!getAuth(storedUser)) window.location.reload()
 
   const logout = function () {
     localStorage.removeItem('UserData');
@@ -54,15 +56,15 @@ function OpenPage({user}) {
 
     try {
       await fetch(
-        `https://garageopener-27000-default-rtdb.firebaseio.com/${user}/state.json`,
+        `https://garageopener-27000-default-rtdb.firebaseio.com/${storedUser}/state.json`,
         {
           method: 'PUT',
           body: JSON.stringify(1)
         }
       );
     } catch (err) {
-      Toast.err('Something went wrong');
-      console.err(err);
+      Toast.error('Something went wrong');
+      console.error(err);
     }
 
     Toast.success('Opening / Closing Garage');
