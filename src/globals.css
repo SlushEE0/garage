@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300&display=swap');
+
+:root {
+--text: #ffffff;
+--background: #181a1e;
+--primary: #850000;
+--compl: #202528;
+--accent: #0079c9;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: 'Lexend';
+  color: var(--text);
+}
+
+html {
+  color-scheme: dark;
+}
+input,
+textarea,
+button,
+select {
+  font: inherit;
+}
+
+body {
+  background-color: var(--background);
+}
