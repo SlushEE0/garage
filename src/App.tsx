@@ -2,6 +2,7 @@ import React from 'react';
 
 import toast from 'react-hot-toast';
 
+import { boolSetState } from '../lib/types';
 import './App.css';
 
 const ESPHOME_KEY =
@@ -11,22 +12,13 @@ const GEOCODING_KEY = '61cefcc612msh04fe1c5b7be6beep1c7dd8jsn5cd0b3377281';
 export default function App() {
   const [auth, SETauth] = React.useState(false);
 
-  React.useEffect(() => {
-    (async () => {
-      getLocationAuth();
-      getLocationAuth = async () => {};
-    })();
-  }, []);
-
-  let getLocationAuth = async function () {
-    if (localStorage.getItem('authorized')) return SETauth(true);
-
+  let locationAuth = function () {
     let coords: Array<number> = [];
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         console.log(pos);
-        toast.loading('Authorizing');
+        toast.loading('Authorizing', { duration: 2000 });
 
         coords = [pos.coords.latitude, pos.coords.longitude];
 
@@ -46,7 +38,7 @@ export default function App() {
           SETauth(true);
           localStorage.setItem('authorized', 'true');
 
-          toast.success('!You are Authorized!');
+          toast.success('You are Authorized !');
         }
       },
       (err) => console.error('error', err)
@@ -55,10 +47,16 @@ export default function App() {
     return;
   };
 
+  React.useEffect(() => {
+    if (localStorage.getItem('authorized')) SETauth(true);
+    locationAuth();
+    locationAuth = () => {};
+  }, []);
+
   if (auth) {
     return <GarageDashboardPage />;
   } else {
-    return <LoginPage />;
+    return <LoginPage {...{ auth, SETauth }} />;
   }
 }
 
@@ -69,7 +67,7 @@ function GarageDashboardPage() {
         Accept: '*/*',
         'Content-Type': 'application/json'
       },
-      mode: "no-cors",
+      mode: 'no-cors',
       body: JSON.stringify({ auth: ESPHOME_KEY }),
       method: 'POST'
     });
@@ -86,6 +84,15 @@ function GarageDashboardPage() {
   );
 }
 
-function LoginPage() {
+function LoginPage({
+  auth,
+  SETauth
+}: {
+  auth: boolean;
+  SETauth: boolSetState;
+}) {
+  console.log(auth);
+  console.log(SETauth);
+  
   return <main>Login</main>;
 }
