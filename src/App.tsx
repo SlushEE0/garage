@@ -67,9 +67,8 @@ function GarageDashboardPage() {
         Accept: '*/*',
         'Content-Type': 'application/json'
       },
-      mode: 'no-cors',
       body: JSON.stringify({ auth: ESPHOME_KEY }),
-      method: 'POST'
+      method: 'PUT'
     });
 
     console.log(resp);
