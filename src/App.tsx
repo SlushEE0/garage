@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import toast from 'react-hot-toast';
 
@@ -8,6 +8,8 @@ import './App.css';
 const ESPHOME_KEY =
   'eyJzdWIiOiJFU1BIb21lIiwibmFtZSI6IkdhcmFnZSIsImlhdCI6MTUxNjIzOTAyMn0';
 const GEOCODING_KEY = '61cefcc612msh04fe1c5b7be6beep1c7dd8jsn5cd0b3377281';
+const AUTH_PASSWORDS = ['gadem'];
+const VALID_ZIPS = ['92127'];
 
 export default function App() {
   const [auth, SETauth] = React.useState(false);
@@ -34,7 +36,7 @@ export default function App() {
           .then((res) => res.json())
           .then((res) => res.address.postcode);
 
-        if (zipCode === '92127') {
+        if (VALID_ZIPS.includes(zipCode)) {
           SETauth(true);
           localStorage.setItem('authorized', 'true');
 
@@ -90,8 +92,76 @@ function LoginPage({
   auth: boolean;
   SETauth: boolSetState;
 }) {
-  console.log(auth);
-  console.log(SETauth);
-  
-  return <main>Login</main>;
+  if (auth) window.location.reload();
+  const [submitAllowed, SETsubmitAllowed] = React.useState(true);
+
+  let submitSpam = 0;
+  let clearSpamTimeouts: number[] = [];
+
+  const handleSubmit = function (e: React.FormEvent | any) {
+    /*
+    using any as the type because ts is saying .password doesnt exist on e.target
+    because it is the name of the input 
+    */
+    ('use server');
+
+    e.preventDefault();
+
+    let userInput = e.target.password.value;
+    userInput = userInput.toLowerCase();
+
+    if (AUTH_PASSWORDS.includes(userInput)) {
+      SETauth(true);
+      localStorage.setItem('authorized', 'true');
+
+      toast.success('You are Authorized !');
+    } else {
+      toast.error(`Incorrect Password "${userInput}"`);
+      submitSpam++;
+
+      if (submitSpam > 4 && submitSpam < 10) {
+        clearSpamTimeouts.push(
+          setTimeout(() => {
+            submitSpam = 0;
+
+            //clear all clearSpamTimeouts after 7 seconds except the final warning one
+            clearSpamTimeouts.forEach((id) => {
+              clearTimeout(id);
+            });
+          }, 7000)
+        );
+      } else if (submitSpam > 10) {
+        SETsubmitAllowed(false);
+
+        toast.loading('Try again in 20 seconds', {
+          position: 'top-center',
+          duration: 22000
+        });
+        toast.error('Too many Incorrect Passwords Attempts', {
+          position: 'top-center',
+          duration: 12000
+        });
+
+        setTimeout(() => {
+          SETsubmitAllowed(true);
+        }, 30000);
+      }
+    }
+  };
+
+  return (
+    <main>
+      <form onSubmit={handleSubmit} className='passForm'>
+        <input
+          type='text'
+          name='password'
+          placeholder='PASSWORD'
+          className='passInput'
+        />
+        <button type='submit' className='submitBtn' disabled={!submitAllowed}>
+          Submit
+        </button>
+      </form>
+    </main>
+  );
 }

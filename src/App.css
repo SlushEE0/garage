@@ -18,3 +18,72 @@
 .garageBtn:hover {
   filter: brightness(0.9);
 }
+
+.passInput {
+  width: 25rem;
+  height: 4rem;
+
+  background-color: var(--compl);
+
+  text-indent: 0.6rem;
+  font-size: 2rem;
+
+  border: none;
+  border-radius: 0.5rem;
+
+  outline: 2px solid white;
+
+  transition: all 200ms;
+}
+
+.passInput:hover {  
+  filter: brightness(0.85);
+  outline: 2px solid var(--accent);
+}
+
+.passInput:hover ~ .submitBtn {  
+  filter: brightness(0.8);
+  outline: 2px solid var(--accent);
+}
+
+.passInput:focus, .passInput:focus-within {
+  outline: 2px solid var(--accent);
+}
+
+.submitBtn {
+  position: relative;
+  top: 3.5rem;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 10rem;
+  height: 4rem;
+
+  background-color: var(--compl);
+
+  text-align: center;
+  font-size: 2rem;
+
+  border: none;
+  border-radius: 0.5rem;
+
+  outline: 2px solid white;
+
+  transition: all 200ms;
+}
+
+.submitBtn:hover {
+  filter: brightness(0.7);
+}
+
+.submitBtn:disabled {
+  filter: brightness(0.5);
+  color: red;
+}
+
+.passForm {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
