@@ -81,7 +81,7 @@ function GarageDashboardPage() {
     toast.success('Garage Opened/Closed');
     openRequests++;
 
-    if (openRequests > 4 && openRequests < 10) {
+    if (openRequests > 2 && openRequests < 5) {
       timeouts.push(
         setTimeout(() => {
           openRequests = 0;
@@ -90,9 +90,9 @@ function GarageDashboardPage() {
           timeouts.forEach((id) => {
             clearTimeout(id);
           });
-        }, 3000)
+        }, 5000)
       );
-    } else if (openRequests > 10) {
+    } else if (openRequests >= 5) {
       SETopenAllowed(false);
 
       toast.loading('Try again in 10 seconds', {
@@ -165,7 +165,7 @@ function LoginPage({
             });
           }, 7000)
         );
-      } else if (submitSpam > 10) {
+      } else if (submitSpam >= 10) {
         SETsubmitAllowed(false);
 
         toast.loading('Try again in 20 seconds', {
