@@ -63,6 +63,10 @@ export default function App() {
 }
 
 function GarageDashboardPage() {
+  const [openAllowed, SETopenAllowed] = React.useState(true);
+  let openRequests = 0;
+  let timeouts: number[] = [];
+
   const handleGarageBtnClick = async function () {
     const resp = await fetch('http://esphome.webredirect.org/api/garage', {
       headers: {
@@ -72,15 +76,46 @@ function GarageDashboardPage() {
       body: JSON.stringify({ auth: ESPHOME_KEY }),
       method: 'PUT'
     });
-
     console.log(resp);
 
     toast.success('Garage Opened/Closed');
+    openRequests++;
+
+    if (openRequests > 4 && openRequests < 10) {
+      timeouts.push(
+        setTimeout(() => {
+          openRequests = 0;
+
+          //clear all timeouts after 7 seconds except the final warning one
+          timeouts.forEach((id) => {
+            clearTimeout(id);
+          });
+        }, 3000)
+      );
+    } else if (openRequests > 10) {
+      SETopenAllowed(false);
+
+      toast.loading('Try again in 10 seconds', {
+        position: 'top-center',
+        duration: 11000
+      });
+      toast.error('Too many requests...CHILL', {
+        position: 'top-center',
+        duration: 11000
+      });
+
+      setTimeout(() => {
+        SETopenAllowed(true);
+      }, 10000);
+    }
   };
 
   return (
     <main>
-      <button className='garageBtn' onClick={handleGarageBtnClick}></button>
+      <button
+        className='garageBtn'
+        onClick={handleGarageBtnClick}
+        disabled={!openAllowed}></button>
     </main>
   );
 }
@@ -96,7 +131,7 @@ function LoginPage({
   const [submitAllowed, SETsubmitAllowed] = React.useState(true);
 
   let submitSpam = 0;
-  let clearSpamTimeouts: number[] = [];
+  let timeouts: number[] = [];
 
   const handleSubmit = function (e: React.FormEvent | any) {
     /*
@@ -120,12 +155,12 @@ function LoginPage({
       submitSpam++;
 
       if (submitSpam > 4 && submitSpam < 10) {
-        clearSpamTimeouts.push(
+        timeouts.push(
           setTimeout(() => {
             submitSpam = 0;
 
-            //clear all clearSpamTimeouts after 7 seconds except the final warning one
-            clearSpamTimeouts.forEach((id) => {
+            //clear all timeouts after 7 seconds except the final warning one
+            timeouts.forEach((id) => {
               clearTimeout(id);
             });
           }, 7000)
