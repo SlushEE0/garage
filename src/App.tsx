@@ -68,7 +68,7 @@ function GarageDashboardPage() {
   let timeouts: number[] = [];
 
   const handleGarageBtnClick = async function () {
-    const resp = await fetch('http://esphome.webredirect.org/api/garage', {
+    const resp = await fetch('https://esphome.webredirect.org/api/garage', {
       headers: {
         Accept: '*/*',
         'Content-Type': 'application/json'
