@@ -10,13 +10,16 @@
   height: 10rem;
 
   border-radius: 1rem;
-  border-style: groove;
+
+  border: none;
+  outline: 2px solid white;
 
   transition: all 200ms;
 }
 
 .garageBtn:hover {
-  filter: brightness(0.9);
+  filter: brightness(0.85);
+  outline: 2px solid var(--accent);
 }
 
 .passInput {
@@ -36,17 +39,18 @@
   transition: all 200ms;
 }
 
-.passInput:hover {  
+.passInput:hover {
   filter: brightness(0.85);
   outline: 2px solid var(--accent);
 }
 
-.passInput:hover ~ .submitBtn {  
+.passInput:hover ~ .submitBtn {
   filter: brightness(0.8);
   outline: 2px solid var(--accent);
 }
 
-.passInput:focus, .passInput:focus-within {
+.passInput:focus,
+.passInput:focus-within {
   outline: 2px solid var(--accent);
 }
 
@@ -86,4 +90,34 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.toggleForceBtn {
+  color: red;
+  background-color: hsl(from var(--color) h s calc(l - 60%));
+
+  font-size: 3rem;
+  text-align: center;
+
+  width: 10rem;
+  height: 4rem;
+
+  /* position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  transform: translate(-50%, -50%); */
+
+  border-radius: 0.5rem;
+  border-style: groove;
+
+  border: none;
+  outline: 2px solid white;
+
+  transition: all 200ms;
+
+  z-index: 10;
+}
+.toggleForceBtn:hover {
+  filter: brightness(0.85);
+  outline: 2px solid var(--accent);
 }

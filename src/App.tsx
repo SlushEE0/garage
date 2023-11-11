@@ -3,13 +3,9 @@ import React from 'react';
 import toast from 'react-hot-toast';
 
 import { boolSetState } from '../lib/types';
-import './App.css';
+import * as SECRETS from '../lib/secrets';
 
-const ESPHOME_KEY =
-  'eyJzdWIiOiJFU1BIb21lIiwibmFtZSI6IkdhcmFnZSIsImlhdCI6MTUxNjIzOTAyMn0';
-const GEOCODING_KEY = '61cefcc612msh04fe1c5b7be6beep1c7dd8jsn5cd0b3377281';
-const AUTH_PASSWORDS = ['gadem'];
-const VALID_ZIPS = ['92127'];
+import './App.css';
 
 export default function App() {
   const [auth, SETauth] = React.useState(false);
@@ -28,7 +24,7 @@ export default function App() {
           `https://forward-reverse-geocoding.p.rapidapi.com/v1/reverse?lat=${coords[0]}&lon=${coords[1]}&accept-language=en&polygon_threshold=0.0`,
           {
             headers: {
-              'X-RapidAPI-Key': GEOCODING_KEY,
+              'X-RapidAPI-Key': SECRETS.GEOCODING_KEY,
               'X-RapidAPI-Host': 'forward-reverse-geocoding.p.rapidapi.com'
             }
           }
@@ -36,7 +32,7 @@ export default function App() {
           .then((res) => res.json())
           .then((res) => res.address.postcode);
 
-        if (VALID_ZIPS.includes(zipCode)) {
+        if (SECRETS.VALID_ZIPS.includes(zipCode)) {
           SETauth(true);
           localStorage.setItem('authorized', 'true');
 
@@ -64,18 +60,35 @@ export default function App() {
 
 function GarageDashboardPage() {
   const [openAllowed, SETopenAllowed] = React.useState(true);
+  const [force, SETforce] = React.useState(false);
+
+  let toastAlerts: any = {};
+
   let openRequests = 0;
   let timeouts: number[] = [];
 
   const handleGarageBtnClick = async function () {
+    const timeout = setTimeout(() => {
+      toast.error('Something went wrong');
+    }, 5000);
+
     const resp = await fetch('https://esphome.webredirect.org/api/garage', {
       headers: {
         Accept: '*/*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ auth: ESPHOME_KEY }),
+      body: JSON.stringify({
+        ...({ auth: SECRETS.ESPHOME_KEY } && (force ? { force: 6000 } : null))
+      }),
       method: 'PUT'
-    });
+    })
+      .then(() => {
+        clearTimeout(timeout);
+      })
+      .catch((err) => {
+        toast.error(err);
+        console.error(err);
+      });
     console.log(resp);
 
     toast.success('Garage Opened/Closed');
@@ -110,8 +123,34 @@ function GarageDashboardPage() {
     }
   };
 
+  const handleForceToggle = function (e: React.MouseEvent) {
+    if (force) {
+      (e.target as HTMLButtonElement).style.color = 'red';
+      console.log((e.target as HTMLButtonElement).style.color);
+
+      toast.remove(toastAlerts?.forceAlert);
+    } else {
+      (e.target as HTMLButtonElement).style.color = 'green';
+      console.log((e.target as HTMLButtonElement).style.color);
+
+      toastAlerts = {
+        ...toastAlerts,
+        forceAlert: toast.success('Force Open/Close enabled', {
+          position: 'bottom-right',
+          duration: Math.pow(2, 21)
+        })
+      };
+    }
+
+    SETforce(!force);
+  };
+
   return (
     <main>
+      <button onClick={handleForceToggle} className='toggleForceBtn'>
+        {force ? 'ON' : 'OFF'}
+      </button>
+
       <button
         className='garageBtn'
         onClick={handleGarageBtnClick}
@@ -133,19 +172,18 @@ function LoginPage({
   let submitSpam = 0;
   let timeouts: number[] = [];
 
-  const handleSubmit = function (e: React.FormEvent | any) {
+  const handleSubmit = function (e: React.FormEvent) {
     /*
     using any as the type because ts is saying .password doesnt exist on e.target
-    because it is the name of the input 
     */
     ('use server');
 
     e.preventDefault();
 
-    let userInput = e.target.password.value;
+    let userInput = (e.target as HTMLFormElement).password.value;
     userInput = userInput.toLowerCase();
 
-    if (AUTH_PASSWORDS.includes(userInput)) {
+    if (SECRETS.AUTH_PASSWORDS.includes(userInput)) {
       SETauth(true);
       localStorage.setItem('authorized', 'true');
 
