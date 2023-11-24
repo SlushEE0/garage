@@ -7,6 +7,8 @@ import * as SECRETS from '../lib/secrets';
 
 import './App.css';
 
+const ESPHOME_API_URL = 'https://esphome.webredirect.org/api/garage';
+
 export default function App() {
   const [auth, SETauth] = React.useState(false);
 
@@ -61,18 +63,27 @@ export default function App() {
 function GarageDashboardPage() {
   const [openAllowed, SETopenAllowed] = React.useState(true);
   const [force, SETforce] = React.useState(false);
+  let API_URL = ESPHOME_API_URL;
 
   let toastAlerts: any = {};
 
   let openRequests = 0;
   let timeouts: number[] = [];
 
+
+  const dev = function (key: string, params?: any[]) {
+    if (SECRETS.DEV_KEYS.includes(key)) {
+      SECRETS.DEV_FUNCS(key, params);
+    }
+  };
+  dev('');
+
   const handleGarageBtnClick = async function () {
     const timeout = setTimeout(() => {
       toast.error('Something went wrong');
     }, 5000);
 
-    const resp = await fetch('https://esphome.webredirect.org/api/garage', {
+    const resp = await fetch(`${API_URL}`, {
       headers: {
         Accept: '*/*',
         'Content-Type': 'application/json'
